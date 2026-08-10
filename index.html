@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Anurag Chauhan — Electrical Engineering, IIT Roorkee. Projects in ML systems, backend engineering, and control systems.">
+<title>Anurag Chauhan — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================
+     TOKENS
+     ============================================ */
+  :root{
+    --bg:        #0a2647;
+    --bg-alt:    #0d3160;
+    --line:      #eef3f8;
+    --line-dim:  rgba(238,243,248,0.38);
+    --line-faint:rgba(238,243,248,0.14);
+    --grid:      rgba(255,255,255,0.055);
+    --accent:    #ffb454;
+    --accent-dim:rgba(255,180,84,0.35);
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body:    'IBM Plex Sans', sans-serif;
+    --font-mono:    'JetBrains Mono', monospace;
+
+    --maxw: 1080px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--line);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:40px 40px;
+    overflow-x:hidden;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--accent); color:var(--bg); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
+
+  /* corner registration marks */
+  .reg-marks{ position:relative; }
+  .reg-marks .corner{ position:absolute; width:14px; height:14px; pointer-events:none; }
+  .reg-marks .corner::before,
+  .reg-marks .corner::after{ content:''; position:absolute; background:var(--line-dim); }
+  .reg-marks .corner::before{ width:100%; height:1px; top:50%; }
+  .reg-marks .corner::after{ height:100%; width:1px; left:50%; }
+  .corner.tl{ top:-1px; left:-1px; } .corner.tr{ top:-1px; right:-1px; }
+  .corner.bl{ bottom:-1px; left:-1px; } .corner.br{ bottom:-1px; right:-1px; }
+
+  /* ============================================
+     HEADER — hover to reveal candidate info panel
+     ============================================ */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,38,71,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-faint);
+  }
+  nav.wrap{ display:flex; align-items:center; justify-content:space-between; height:56px; }
+
+  .brand{ position:relative; }
+  .brand-trigger{
+    font-family:var(--font-mono);
+    font-size:14px;
+    letter-spacing:0.05em;
+    padding:6px 8px;
+    margin-left:-8px;
+    cursor:default;
+    display:flex; align-items:center; gap:6px;
+  }
+  .brand-trigger span{ color:var(--accent); }
+  .brand-trigger::after{
+    content:'▾';
+    font-size:10px;
+    color:var(--line-dim);
+    transition:transform .2s ease;
+  }
+  .brand:hover .brand-trigger::after,
+  .brand:focus-within .brand-trigger::after{ transform:rotate(180deg); }
+
+  .about-panel{
+    position:absolute;
+    top:calc(100% + 1px);
+    left:-8px;
+    width:340px;
+    background:var(--bg-alt);
+    border:1px solid var(--line-faint);
+    box-shadow:0 16px 32px rgba(0,0,0,0.35);
+    padding:18px;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-8px);
+    transition:opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  .brand:hover .about-panel,
+  .brand:focus-within .about-panel{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
+  .about-avatar{
+    width:38px; height:38px;
+    border:1px solid var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono);
+    color:var(--accent);
+    font-size:13px;
+    margin-bottom:10px;
+  }
+  .about-panel h4{
+    font-family:var(--font-display);
+    font-size:15px;
+    margin-bottom:4px;
+  }
+  .about-panel p{
+    font-size:13px;
+    color:var(--line-dim);
+    margin-bottom:10px;
+  }
+  .about-panel .btn{ font-size:11px; padding:7px 12px; }
+
+  nav ul{ display:flex; align-items:center; gap:16px; list-style:none; font-family:var(--font-mono); font-size:13px; letter-spacing:0.04em; }
+
+  .nav-toggle{ display:none; background:none; border:1px solid var(--line-dim); color:var(--line); font-family:var(--font-mono); padding:6px 10px; cursor:pointer; }
+
+  /* ============================================
+     CONTACT — dropdown in the nav
+     ============================================ */
+  .contact-wrap{ position:relative; }
+  .contact-btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.05em;
+    background:var(--accent);
+    color:var(--bg);
+    font-weight:700;
+    border:1px solid var(--accent);
+    padding:8px 14px;
+    display:flex; align-items:center; gap:6px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .contact-btn:hover{ background:transparent; color:var(--accent); }
+  .contact-btn .chev{ font-size:9px; transition:transform .2s ease; }
+  .contact-btn[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+
+  .contact-dropdown{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    width:250px;
+    background:var(--bg-alt);
+    border:1px solid var(--line-faint);
+    box-shadow:0 16px 32px rgba(0,0,0,0.35);
+    padding:6px;
+    opacity:0; visibility:hidden; transform:translateY(-8px);
+    transition:opacity .18s ease, transform .18s ease, visibility .18s;
+    z-index:60;
+  }
+  .contact-dropdown.open{ opacity:1; visibility:visible; transform:translateY(0); }
+  .contact-dropdown a{
+    display:flex; flex-direction:column; gap:2px;
+    padding:9px 10px;
+    transition:background .15s ease;
+  }
+  .contact-dropdown a:hover{ background:var(--line-faint); }
+  .contact-dropdown a span.label{
+    font-family:var(--font-mono); font-size:10px; color:var(--accent); letter-spacing:0.08em;
+  }
+  .contact-dropdown a span.value{ font-size:13.5px; color:var(--line); }
+
+  /* ============================================
+     SECTION HEADERS
+     ============================================ */
+  section{ padding:44px 0; border-bottom:1px solid var(--line-faint); }
+  .sec-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:26px; }
+  .sec-num{ font-family:var(--font-mono); font-size:13px; color:var(--accent); }
+  .sec-title{ font-family:var(--font-display); font-size:23px; font-weight:600; letter-spacing:-0.01em; }
+  .sec-rule{ flex:1; height:1px; background:var(--line-faint); }
+
+  /* ============================================
+     PROJECTS — side by side, dependencies box below body
+     ============================================ */
+  .proj-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line-faint);
+    border:1px solid var(--line-faint);
+  }
+  .proj{ background:var(--bg); }
+  .proj-body{ padding:18px 18px; height:100%; display:flex; flex-direction:column; }
+  .proj-tag{ font-family:var(--font-mono); font-size:11px; color:var(--accent); letter-spacing:0.08em; display:block; margin-bottom:6px; }
+  .proj-body h3{ font-family:var(--font-display); font-size:18px; font-weight:600; margin-bottom:6px; }
+  .proj-body p{ font-size:13.5px; color:var(--line-dim); margin-bottom:12px; }
+
+  .deps-box{
+    border:1px solid var(--line-faint);
+    padding:10px 12px;
+    margin-bottom:10px;
+    margin-top:auto;
+  }
+  .deps-box span.deps-label{
+    display:block; font-family:var(--font-mono); font-size:10px; color:var(--line-dim);
+    letter-spacing:0.08em; margin-bottom:8px;
+  }
+  .deps-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .deps-tags span{
+    font-family:var(--font-mono); font-size:11px; color:var(--line);
+    border:1px solid var(--line-faint); padding:3px 7px;
+    background:var(--bg-alt);
+  }
+  .proj-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:12px; color:var(--line);
+    border-bottom:1px solid var(--line-dim); padding-bottom:2px;
+  }
+  .proj-link:hover{ color:var(--accent); border-color:var(--accent); }
+
+  /* ============================================
+     TECH STACK — bottom section, BOM style
+     ============================================ */
+  .bom{ width:100%; border-collapse:collapse; font-family:var(--font-mono); font-size:13px; }
+  .bom tr{ border-bottom:1px solid var(--line-faint); }
+  .bom tr:first-child{ border-top:1px solid var(--line-faint); }
+  .bom td{ padding:10px 8px; vertical-align:top; }
+  .bom td:first-child{ color:var(--accent); width:150px; letter-spacing:0.04em; }
+  .bom td:last-child{ color:var(--line-dim); }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width:900px){
+    .proj-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:760px){
+    nav ul{ display:none; }
+    .nav-toggle{ display:block; }
+    .about-panel{ width:88vw; left:-8px; }
+    .contact-dropdown{ width:82vw; }
+    .proj-grid{ grid-template-columns:1fr; }
+    section{ padding:32px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand" tabindex="0">
+      <div class="brand-trigger">Anurag Chauhan</div>
+      <div class="about-panel reg-marks">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <div class="about-avatar">AC</div>
+        <h4>Anurag Chauhan</h4>
+        <p> Fresher from IIT Roorkee. Builds full-stack and ML
+           systems from scratch — backend, retrieval pipelines, control systems — favoring
+           understanding the internals over reaching for a framework.</p>
+        <a href="mailto:anurag_c@ee.iitr.ac.in" class="btn primary">Email me</a>
+      </div>
+    </div>
+
+    <ul>
+      <li class="contact-wrap">
+        <button class="contact-btn" id="contactBtn" aria-expanded="false">
+          Contact <span class="chev">▾</span>
+        </button>
+        <div class="contact-dropdown" id="contactDropdown">
+          <a href="mailto:anurag_c@ee.iitr.ac.in">
+            <span class="label">EMAIL</span>
+            <span class="value">anurag_c@ee.iitr.ac.in</span>
+          </a>
+          <a href="https://github.com/AnuragChauhan1120" target="_blank" rel="noopener">
+            <span class="label">GITHUB</span>
+            <span class="value">AnuragChauhan1120</span>
+          </a>
+          <a href="https://linkedin.com/in/anurag-chauhan1120" target="_blank" rel="noopener">
+            <span class="label">LINKEDIN</span>
+            <span class="value">anurag-chauhan1120</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+    <button class="nav-toggle" aria-label="menu">≡</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- PROJECTS -->
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">Selected work</h2>
+        <div class="sec-rule"></div>
+      </div>
+
+      <div class="proj-grid">
+
+        <article class="proj">
+          <div class="proj-body">
+            <span class="proj-tag">SCREEN UNDERSTANDING PIPELINE</span>
+            <h3>Screen Understanding Pipeline</h3>
+            <p>Continuous screen capture piped through OCR and a vision-language model, then
+               structured into metadata and categorized activity logs — four stages.</p>
+            <div class="deps-box">
+              <span class="deps-label">DEPENDENCIES</span>
+              <div class="deps-tags"><span>Python</span><span>Tesseract</span><span>Groq / Qwen VL</span><span>Llama 3.3 70B</span><span>ffmpeg</span><span>mss</span></div>
+            </div>
+            <a href="https://github.com/AnuragChauhan1120/Ambient-Screen-Understanding-Capture-Transcription-Metadata-Extraction" class="proj-link">View repo →</a>
+          </div>
+        </article>
+
+        <article class="proj">
+          <div class="proj-body">
+            <span class="proj-tag">MULTI-AGENT RAG</span>
+            <h3>resume-agent</h3>
+            <p>PDF parsing, sentence-transformer embeddings, Qdrant vector search, cross-encoder
+               reranking, and SSE streaming.</p>
+            <div class="deps-box">
+              <span class="deps-label">DEPENDENCIES</span>
+              <div class="deps-tags"><span>PyMuPDF</span><span>Qdrant</span><span>Redis</span><span>PostgreSQL</span><span>Next.js</span><span>Groq</span></div>
+            </div>
+            <a href="https://github.com/AnuragChauhan1120/resume-agent" class="proj-link">View repo →</a>
+          </div>
+        </article>
+
+        <article class="proj">
+          <div class="proj-body">
+            <span class="proj-tag">REAL-TIME AI MEETING ASSISTANT</span>
+            <h3>Meeting Copilot</h3>
+            <p>Real-time meeting assistant: chunked audio capture, a sequential transcription
+               queue, and rolling-context suggestions — shipped serverless with no backend at all.</p>
+            <div class="deps-box">
+              <span class="deps-label">DEPENDENCIES</span>
+              <div class="deps-tags"><span>React</span><span>Vite</span><span>Groq Whisper V3</span><span>Llama 3.3 70B</span><span>Netlify</span></div>
+            </div>
+            <a href="https://github.com/AnuragChauhan1120/meeting-copilot" class="proj-link">View repo →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="stack">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">What I Know</h2>
+        <div class="sec-rule"></div>
+      </div>
+
+      <table class="bom">
+        <tr><td>LANGUAGES</td><td>Python, SQL, C++, Javascript</td></tr>
+        <tr><td>DATABASE</td><td>PostgreSQL, Redis, MySQL, Qdrant</td></tr>
+        <tr><td>BACKEND</td><td>FastAPI, Pydantic, SSE </td></tr>
+        <tr><td>FRONTEND</td><td>React, Vite, vanilla HTML/CSS/JS</td></tr>
+        <tr><td>AI/ML</td><td>PyTorch, TensorFlow, scikit-learn, NumPy, Pandas, NLP, Computer Vision, OCR, LLMs, Vision-Language Models, RAG, Time Series Analysis</td></tr>
+      </table>
+    </div>
+  </section>
+
+</main>
+<script>
+  // mobile nav toggle
+  const toggle = document.querySelector('.nav-toggle');
+  const navList = document.querySelector('nav ul');
+  toggle.addEventListener('click', () => {
+    const isOpen = navList.style.display === 'flex';
+    navList.style.display = isOpen ? 'none' : 'flex';
+    Object.assign(navList.style, {
+      flexDirection:'column', position:'absolute', top:'56px', right:'32px',
+      background:'var(--bg-alt)', border:'1px solid var(--line-faint)',
+      padding:'12px 20px', gap:'12px'
+    });
+  });
+
+  // contact dropdown
+  const btn = document.getElementById('contactBtn');
+  const dropdown = document.getElementById('contactDropdown');
+
+  function toggleDropdown(){
+    const isOpen = dropdown.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+  }
+  function closeDropdown(){
+    dropdown.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && e.target !== btn) closeDropdown();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDropdown();
+  });
+</script>
+
+</body>
+</html>
